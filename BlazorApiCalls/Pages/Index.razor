@@ -1,0 +1,38 @@
+﻿@page "/"
+@using System.Net.Http
+@inject HttpClient Http
+
+@if (People != null)
+{
+    @foreach (var person in People)
+    {
+        <div>
+            @person.name @person.age
+        </div>
+    }
+}
+
+@if (Person != null)
+{
+    @Person.name @Person.age
+}
+@Message
+
+@code {
+    private Models.Person[] People;
+    public string Message { get; set; }
+    public Models.Person Person { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            People = await Http.GetFromJsonAsync<Models.Person[]>("people.json");
+            //Person = await Http.GetFromJsonAsync<Models.Person>("person.json");
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+        }
+    }
+}
